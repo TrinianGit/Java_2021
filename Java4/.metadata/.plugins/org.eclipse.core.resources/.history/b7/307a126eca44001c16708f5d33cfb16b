@@ -1,0 +1,173 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+
+class BusLine implements BusLineInterface{
+	
+	private List <LineSegment> ToRoute = new ArrayList<>();
+	private Map <String, Pair> BusLinesStartEnd = new HashMap<>();
+	private List <PairLinePoints> BusLinesKeyPoints = new ArrayList<>();
+	private Map <LineSegment, String> Route2DPositions = new HashMap<>();
+	private Map <String, List<Position>> BusLineRoute = new HashMap<>();
+	
+	
+	@Override
+	public void addBusLine(String busLineName, Position firstPoint, Position lastPoint) {
+		Pair pair = new Pair(firstPoint, lastPoint);
+		BusLinesStartEnd.put(busLineName, pair);
+	}
+
+	@Override
+	public void addLineSegment(String busLineName, LineSegment lineSegment) {
+		Pair pair = new Pair(lineSegment.getFirstPosition(), lineSegment.getLastPosition());
+		PairLinePoints PLP = new PairLinePoints(busLineName, pair);
+		BusLinesKeyPoints.add(PLP);
+		CreateIfExists(busLineName);
+	}
+
+	@Override
+	public void findIntersections() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, List<Position>> getLines() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, List<Position>> getIntersectionPositions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, List<String>> getIntersectionsWithLines() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<LinesPair, Set<Position>> getIntersectionOfLinesPair() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	
+	
+	public void CreateIfExists(String BusLineName) {
+		if (CheckExistance(BusLineName)) {
+			System.out.println(BusLineName + " jest trasa!");
+		}
+		else {
+			System.out.println(BusLineName + " ni ma trasy!");
+		}
+	}
+	
+	public boolean CheckExistance (String BusLineName) {
+		Position Start = BusLinesStartEnd.get(BusLineName).getFirst();
+		Position Finish = BusLinesStartEnd.get(BusLineName).getLast();
+		Map <Position, Position> BusKeyPositions = new HashMap<>();
+		Position LineStart;
+		Position LineFinish;
+		for (int i = 0; i < BusLinesKeyPoints.size(); i++) {
+			if (BusLinesKeyPoints.get(i).getBusLine() == BusLineName) {
+				BusKeyPositions.put(BusLinesKeyPoints.get(i).getPoints().getFirst(), BusLinesKeyPoints.get(i).getPoints().getLast());
+			}
+		}
+		
+		if (!BusKeyPositions.containsKey(Start) || !BusKeyPositions.containsValue(Finish)) return false;
+		
+		return true;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	class SegmentLine implements LinesPair{
+		
+		private String FirstLineName;
+		private String SecondLineName;
+		
+		public SegmentLine(String firstlinename, String secondlinename) {
+			FirstLineName = firstlinename;
+			SecondLineName = secondlinename;
+		}
+		
+		@Override
+		public String getFirstLineName() {
+			return FirstLineName;
+		}
+
+		@Override
+		public String getSecondLineName() {
+			return SecondLineName;
+		}
+		
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+class Pair extends BusLine{
+	
+	private Position First;
+	private Position Last;
+	
+	public Pair (Position first, Position last){
+		First = first;
+		Last = last;
+	}
+	
+	public Position getFirst(){
+		return First;
+	}
+	
+	public Position getLast() {
+		return Last;
+	}
+}
+
+class PairLinePoints extends BusLine{
+	
+	private String BusLine;
+	private Pair Points;
+	
+	public PairLinePoints (String busline, Pair pair) {
+		BusLine = busline;
+		Points = pair;
+	}
+	
+	public String getBusLine(){
+		return BusLine;
+	}
+	
+	public Pair getPoints() {
+		return Points;
+	}
+}

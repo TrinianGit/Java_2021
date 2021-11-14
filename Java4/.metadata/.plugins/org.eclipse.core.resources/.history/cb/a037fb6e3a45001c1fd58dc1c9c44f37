@@ -1,0 +1,33 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Test {
+	
+	
+	public static void main(String[] args) {
+		
+		//BusLine bus = new BusLine();
+		//Position start = new Position2D (10, 10);
+		//Position end = new Position2D (0, 0);
+		//bus.addBusLine("114", start, end);
+		//LineSegment line = new LineSegment(new Position2D(0,5), new Position2D (0,0));
+		//bus.addLineSegment("114", line);
+		//line = new LineSegment(new Position2D(10,10), new Position2D (5,10));
+		//bus.addLineSegment("114", line);
+		//line = new LineSegment(new Position2D(5,10), new Position2D (0,5));
+		//bus.addLineSegment("114", line);
+		List<Integer> Lista = new ArrayList<>();
+		Lista.add(10);
+		Map<Integer, List<Integer>> Testowa = new HashMap<>();
+		Testowa.put(1, Lista);
+		System.out.println(Testowa);
+		Testowa.get(1).add(20);
+		System.out.println(Testowa);
+		//System.out.println(bus.getLines());
+		
+	}
+	
+	
+}

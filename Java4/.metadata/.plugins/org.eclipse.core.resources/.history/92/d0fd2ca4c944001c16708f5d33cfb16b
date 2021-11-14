@@ -1,0 +1,49 @@
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+class BusLine implements BusLineInterface{
+
+	@Override
+	public void addBusLine(String busLineName, Position firstPoint, Position lastPoint) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addLineSegment(String busLineName, LineSegment lineSegment) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void findIntersections() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, List<Position>> getLines() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, List<Position>> getIntersectionPositions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, List<String>> getIntersectionsWithLines() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<LinesPair, Set<Position>> getIntersectionOfLinesPair() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

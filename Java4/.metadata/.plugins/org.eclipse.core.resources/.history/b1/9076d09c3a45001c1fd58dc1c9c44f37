@@ -1,0 +1,380 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+
+class BusLine implements BusLineInterface{
+	
+	private Map <String, Pair> BusLinesStartEnd = new HashMap<>();
+	private List <PairLinePoints> BusLinesKeyPoints = new ArrayList<>();
+	private List <String> BusLines = new ArrayList<>();
+	private List <LinesPair> PairOfLines = new ArrayList<>();
+	private Map<LinesPair, Set<Position>> IntersectionOfLinesPair = new HashMap<>();
+	private Map <String, List<Position>> BusLineRoute = new HashMap<>();
+	
+	
+	@Override
+	public void addBusLine(String busLineName, Position firstPoint, Position lastPoint) {
+		Pair pair = new Pair(firstPoint, lastPoint);
+		BusLinesStartEnd.put(busLineName, pair);
+		BusLines.add(busLineName);
+	}
+
+	@Override
+	public void addLineSegment(String busLineName, LineSegment lineSegment) {
+		Pair pair = new Pair(lineSegment.getFirstPosition(), lineSegment.getLastPosition());
+		PairLinePoints PLP = new PairLinePoints(busLineName, pair);
+		BusLinesKeyPoints.add(PLP);
+		CreateIfExists(busLineName);
+	}
+
+	@Override
+	public void findIntersections() {
+		PairOfLines.clear();
+		IntersectionOfLinesPair.clear();
+		for (int i = 0; i < BusLines.size(); i++) {
+			for (int j = i; j < BusLines.size(); i++) {
+				PairOfLines POF = new PairOfLines(BusLines.get(i), BusLines.get(j));
+				PairOfLines.add(POF);
+				if (i != j) {
+					POF = new PairOfLines(BusLines.get(j), BusLines.get(i));
+					PairOfLines.add(POF);
+				}
+			}
+		}
+		for (int i = 0; i < PairOfLines.size(); i++) {
+			Set<Position> Intersections = new HashSet<>();
+			Intersections = FindIntersections(PairOfLines.get(i));
+			IntersectionOfLinesPair.put(PairOfLines.get(i), Intersections);
+		}
+	}
+
+	@Override
+	public Map<String, List<Position>> getLines() {
+		return BusLineRoute;
+	}
+
+	@Override
+	public Map<String, List<Position>> getIntersectionPositions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, List<String>> getIntersectionsWithLines() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<LinesPair, Set<Position>> getIntersectionOfLinesPair() {
+		return IntersectionOfLinesPair;
+	}
+
+	
+	
+	
+	private void CreateIfExists(String BusLineName) {
+		if (CheckExistance(BusLineName)) {
+			Position Start = BusLinesStartEnd.get(BusLineName).getFirst();
+			Map <Position, Position> BusKeyPositions = new HashMap<>();
+			List <Position> BusRoute = new ArrayList<>();
+			Position Key = Start;
+			for (int i = 0; i < BusLinesKeyPoints.size(); i++) {
+				if (BusLinesKeyPoints.get(i).getBusLine() == BusLineName) {
+					BusKeyPositions.put(BusLinesKeyPoints.get(i).getPoints().getFirst(), BusLinesKeyPoints.get(i).getPoints().getLast());
+				}
+			}
+			
+			while (BusKeyPositions.get(Key) != null) {
+				if (Key.getRow() == BusKeyPositions.get(Key).getRow()) {
+					if (Key.getCol() > BusKeyPositions.get(Key).getCol()) {
+						for (int i = Key.getCol(); i != BusKeyPositions.get(Key).getCol(); i-- ) {
+							Position pos = new Position2D (i, Key.getRow());
+							BusRoute.add(pos);
+						}
+					}
+					else {
+						for (int i = Key.getCol(); i != BusKeyPositions.get(Key).getCol(); i++ ) {
+							Position pos = new Position2D (i, Key.getRow());
+							BusRoute.add(pos);
+						}
+					}
+				}
+				
+				else if (Key.getCol() == BusKeyPositions.get(Key).getCol()) {
+					if (Key.getRow() > BusKeyPositions.get(Key).getRow()) {
+						for (int i = Key.getRow(); i != BusKeyPositions.get(Key).getRow(); i-- ) {
+							Position pos = new Position2D (Key.getCol(), i);
+							BusRoute.add(pos);
+						}
+					}
+					else {
+						for (int i = Key.getRow(); i != BusKeyPositions.get(Key).getRow(); i++ ) {
+							Position pos = new Position2D (Key.getCol(), i);
+							BusRoute.add(pos);
+						}
+					}
+				}
+				
+				else if (Key.getRow() > BusKeyPositions.get(Key).getRow()) {
+					int k = 0;
+					if (Key.getCol() > BusKeyPositions.get(Key).getCol()) {
+						for(int i = Key.getRow(); i != BusKeyPositions.get(Key).getRow(); i--) {
+							Position pos = new Position2D (Key.getCol()-k, i);
+							BusRoute.add(pos);
+							k++;
+						}
+					}
+					else {
+						for(int i = Key.getRow(); i != BusKeyPositions.get(Key).getRow(); i--) {
+							Position pos = new Position2D (Key.getCol()+k, i);
+							BusRoute.add(pos);
+							k++;
+						}
+					}
+				}
+				
+				else if (Key.getRow() < BusKeyPositions.get(Key).getRow()) {
+					int k = 0;
+					if (Key.getCol() > BusKeyPositions.get(Key).getCol()) {
+						for(int i = Key.getRow(); i != BusKeyPositions.get(Key).getRow(); i++) {
+							Position pos = new Position2D (Key.getCol()-k, i);
+							BusRoute.add(pos);
+							k++;
+						}
+					}
+					else {
+						for(int i = Key.getRow(); i != BusKeyPositions.get(Key).getRow(); i++) {
+							Position pos = new Position2D (Key.getCol()+k, i);
+							BusRoute.add(pos);
+							k++;
+						}
+					}
+				}
+				
+				Key = BusKeyPositions.get(Key);
+				if (BusKeyPositions.get(Key) == null) BusRoute.add(Key);
+			}
+			
+			BusLineRoute.put(BusLineName, BusRoute);
+		}
+	}
+	
+	private boolean CheckExistance (String BusLineName) {
+		Position Start = BusLinesStartEnd.get(BusLineName).getFirst();
+		Position Finish = BusLinesStartEnd.get(BusLineName).getLast();
+		Map <Position, Position> BusKeyPositions = new HashMap<>();
+		Position Key;
+		for (int i = 0; i < BusLinesKeyPoints.size(); i++) {
+			if (BusLinesKeyPoints.get(i).getBusLine() == BusLineName) {
+				BusKeyPositions.put(BusLinesKeyPoints.get(i).getPoints().getFirst(), BusLinesKeyPoints.get(i).getPoints().getLast());
+			}
+		}
+		
+		if (!BusKeyPositions.containsKey(Start) || !BusKeyPositions.containsValue(Finish)) return false;
+		
+		Key = Start;
+		
+		while (!BusKeyPositions.get(Key).equals(Finish)) {
+			Key = BusKeyPositions.get(Key);
+			if (BusKeyPositions.get(Key) == null) return false;
+		}
+		
+		return true;
+	}
+	
+	
+	
+	
+	private Set<Position> FindIntersections (LinesPair lp) {
+		Set <Position> Intersections = new HashSet<>();
+		List <Position> FirstLinePoints = BusLineRoute.get(lp.getFirstLineName());
+		List <Position> SecondLinePoints = BusLineRoute.get(lp.getSecondLineName());
+		List <Position> SamePointsInTwoLines = new ArrayList<>();
+		Map <Position, PointPairLocation> MapOfLocations = new HashMap<>();
+		
+		for (int i = 0; i < FirstLinePoints.size(); i++) {
+			if (SecondLinePoints.contains(FirstLinePoints.get(i))) {
+				SamePointsInTwoLines.add(FirstLinePoints.get(i));
+			}
+		}
+		
+		MapOfLocations = FindPointPairLocation(FirstLinePoints, SecondLinePoints, SamePointsInTwoLines);
+		
+		for (int i = 0; i < SamePointsInTwoLines.size(); i++) {
+			if (MapOfLocations.get(SamePointsInTwoLines.get(i)).PositionIntersects()) {
+				Intersections.add(SamePointsInTwoLines.get(i));
+			}
+		}
+		
+		return Intersections;
+	}
+	
+	
+	private Map<Position, PointPairLocation> FindPointPairLocation (List <Position> FirstLinePoints, List <Position> SecondLinePoints, List <Position> SamePointsInTwoLines){
+		
+		Map <Position, PointPairLocation> MapOfLocations = new HashMap<>();
+		
+		for (int i = 0; i < SamePointsInTwoLines.size(); i++) {
+			PointPairLocation PPL = new PointPairLocation();
+			if (FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() - 1, SamePointsInTwoLines.get(i).getRow())) && FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() + 1, SamePointsInTwoLines.get(i).getRow()))) {
+				PPL.setPositionInLineOne("vertical");
+			}
+			else if (FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol(), SamePointsInTwoLines.get(i).getRow() - 1)) && FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol(), SamePointsInTwoLines.get(i).getRow() + 1))) {
+				PPL.setPositionInLineOne("horizontal");
+			}
+			else if (FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() - 1, SamePointsInTwoLines.get(i).getRow() - 1)) && FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() + 1, SamePointsInTwoLines.get(i).getRow() + 1))) {
+				PPL.setPositionInLineOne("-45");
+			}
+			else if (FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() + 1, SamePointsInTwoLines.get(i).getRow() - 1)) && FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() - 1, SamePointsInTwoLines.get(i).getRow() + 1))) {
+				PPL.setPositionInLineOne("+45");
+			}
+			else {
+				PPL.setPositionInLineOne("none");
+			}
+			
+			if (SecondLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol(), SamePointsInTwoLines.get(i).getRow() - 1)) && FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol(), SamePointsInTwoLines.get(i).getRow() + 1))) {
+				PPL.setPositionInLineTwo("horizontal");
+			}
+			else if (SecondLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() - 1, SamePointsInTwoLines.get(i).getRow())) && FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() + 1, SamePointsInTwoLines.get(i).getRow()))) {
+				PPL.setPositionInLineTwo("vertical");
+			}
+			else if (SecondLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() + 1, SamePointsInTwoLines.get(i).getRow() - 1)) && FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() - 1, SamePointsInTwoLines.get(i).getRow() + 1))) {
+				PPL.setPositionInLineTwo("+45");
+			}
+			else if (SecondLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() - 1, SamePointsInTwoLines.get(i).getRow() - 1)) && FirstLinePoints.contains(new Position2D(SamePointsInTwoLines.get(i).getCol() + 1, SamePointsInTwoLines.get(i).getRow() + 1))) {
+				PPL.setPositionInLineTwo("-45");
+			}
+			else {
+				PPL.setPositionInLineTwo("none");
+			}
+			
+			MapOfLocations.put(SamePointsInTwoLines.get(i), PPL);
+		}
+		
+		return MapOfLocations;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+class PairOfLines implements LinesPair{
+		
+		private String FirstLineName;
+		private String SecondLineName;
+		
+		public PairOfLines (String firstlinename, String secondlinename) {
+			FirstLineName = firstlinename;
+			SecondLineName = secondlinename;
+		}
+		
+		@Override
+		public String getFirstLineName() {
+			return FirstLineName;
+		}
+
+		@Override
+		public String getSecondLineName() {
+			return SecondLineName;
+		}
+		
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+class Pair extends BusLine{
+	
+	private Position First;
+	private Position Last;
+	
+	public Pair (Position first, Position last){
+		First = first;
+		Last = last;
+	}
+	
+	public Position getFirst(){
+		return First;
+	}
+	
+	public Position getLast() {
+		return Last;
+	}
+}
+
+
+
+
+
+
+
+class PairLinePoints extends BusLine{
+	
+	private String BusLine;
+	private Pair Points;
+	
+	public PairLinePoints (String busline, Pair pair) {
+		BusLine = busline;
+		Points = pair;
+	}
+	
+	public String getBusLine(){
+		return BusLine;
+	}
+	
+	public Pair getPoints() {
+		return Points;
+	}
+}
+
+
+
+
+
+
+
+
+class PointPairLocation extends BusLine{
+	private String PositionInLineOne;
+	private String PositionInLineTwo;
+	
+	public void setPositionInLineOne(String str){
+		PositionInLineOne = str;
+	}
+	
+	public void setPositionInLineTwo(String str){
+		PositionInLineTwo = str;
+	}
+	
+	public boolean PositionIntersects(){
+		if (PositionInLineOne == "none" || PositionInLineTwo == "none") return false;
+		else if (PositionInLineOne == PositionInLineTwo) return false;
+		else if (PositionInLineOne == "vertical" && PositionInLineTwo == "horizontal") return true;
+		else if (PositionInLineOne == "horizontal" && PositionInLineTwo == "vertical") return true;
+		else if (PositionInLineOne == "+45" && PositionInLineTwo == "-45") return true;
+		else if (PositionInLineOne == "-45" && PositionInLineTwo == "+45") return true;
+		else return false;
+	}
+}

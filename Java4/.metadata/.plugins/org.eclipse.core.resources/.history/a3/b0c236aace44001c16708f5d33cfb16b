@@ -1,0 +1,20 @@
+
+public class Test {
+	
+	
+	public static void main(String[] args) {
+		
+		BusLine bus = new BusLine();
+		Position start = new Position2D (0, 0);
+		Position end = new Position2D (10, 10);
+		bus.addBusLine("114", start, end);
+		LineSegment line = new LineSegment(new Position2D(0,0), new Position2D (10,0));
+		bus.addLineSegment("114", line);
+		line = new LineSegment(new Position2D(10,0), new Position2D (10,10));
+		bus.addLineSegment("114", line);
+		
+		
+	}
+	
+	
+}
