@@ -1,0 +1,11 @@
+import java.util.Map;
+
+public class Test {
+	
+	public static void main (String[] args) {
+		Decrypter dec = new Decrypter();
+
+		dec.setInputText("Wydział   Fizyki, 	Astronomii \n    i\n    Informatyki 			Stosowanej\nogłasza, że i tak wszystkich na numerkach wypierdoli \nxD");
+    	System.out.println(dec.getCode());
+	}
+}

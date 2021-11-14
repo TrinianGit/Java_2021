@@ -1,0 +1,19 @@
+import java.util.List;
+import java.util.Arrays;
+
+
+public class Tester {
+	public static void main (String[] Args) {
+		List<Integer> limits = Arrays.asList (1, 1 ,1);
+		
+		GeneralLoops obiekt = new Loops();
+		
+		obiekt.setLowerLimits(limits);
+		
+		System.out.println(obiekt.getResult());
+		
+		limits = Arrays.asList (1, 2, 5);
+		
+		System.out.println(obiekt.getResult());
+	}
+}

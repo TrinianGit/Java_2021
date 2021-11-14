@@ -1,0 +1,10 @@
+import java.util.Map;
+
+public class Test {
+	Decrypter dec = new Decrypter();
+    Map<Character, Character> resultMap;
+    Map<Character, Character> expectedMap;
+
+    dec.setInputText("Wydział   Fizyki, 	Astronomii \n    i\n    Informatyki 			Stosowanej\nogłasza, że i tak wszystkich na numerkach wypierdoli \nxD");
+    resultMap = dec.getCode();
+}

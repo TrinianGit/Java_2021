@@ -1,0 +1,14 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test {
+
+  public static void main(String[] args) throws Exception {
+	  
+	  Decrypter dec = new Decrypter();
+	  
+	  dec.setInputText("z8avk#s )kv8nk, z8avk#s   )kv8nk, \\t qŚC2ż9ż5kk k &9(ż25#C8nk 7CżŚż>#9[Y 7CżŚż>#9[Y W2#nA>");
+	  
+	  System.out.println(dec.getCode());
+  }
+}

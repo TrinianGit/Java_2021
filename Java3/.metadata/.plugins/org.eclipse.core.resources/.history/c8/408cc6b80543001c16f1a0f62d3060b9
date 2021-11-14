@@ -1,0 +1,14 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test {
+
+  public static void main(String[] argv) {
+	  
+	  Decrypter dec = new Decrypter();
+	  
+	  String cipp = " EżMłpĆź śpłżfp, lPgdFcFDpp p scvFdDĆgżfp 8gFPFJĆcT, EżMłpĆź   śpłżfp,      lPgdFcFDpp p scvFdDĆgżfp 8gFPFJĆcTć 8gFPFJĆcTć RdĆfwJ";
+	  dec.setInputText(cipp);
+	  System.out.println(dec.getCode());
+  }
+}

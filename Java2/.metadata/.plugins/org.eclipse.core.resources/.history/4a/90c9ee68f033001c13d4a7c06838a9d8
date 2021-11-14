@@ -1,0 +1,49 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Loops implements GeneralLoops {
+	
+	private List<Integer> LowerLimits;
+	private List<Integer> UpperLimits;
+	private List<List<Integer>> Result;
+	private Integer size;
+
+	@Override
+	public void setLowerLimits(List<Integer> limits) {
+		LowerLimits = new ArrayList<Integer> (limits);
+		
+	}
+
+	@Override
+	public void setUpperLimits(List<Integer> limits) {
+		UpperLimits = new ArrayList<Integer> (limits);
+		size = UpperLimits.size();
+		
+	}
+
+	@Override
+	public List<List<Integer>> getResult() {
+		//System.out.println(UpperLimits);
+		Iterator(LowerLimits.get(0), UpperLimits.get(0), 0);
+		return Result;
+	}
+	
+	private void Iterator (Integer LowerLimit, Integer UpperLimit, Integer n) {
+		List<Integer> Return = new ArrayList<Integer> ();
+		System.out.println(LowerLimit);
+		System.out.println(UpperLimit);
+		System.out.println(" ");
+		for (Integer counter = LowerLimit; counter <= UpperLimit; counter++) {
+			if (n == size) {
+				//Result.add(Return);
+				//System.out.println(Return);
+			}
+			else {
+				Return.add(counter);
+				if (n+1 < size) Iterator(LowerLimits.get(n+1), UpperLimits.get(n+1), n+1);
+				else Iterator(0, 0, size);
+			}
+		}
+	}
+
+}
